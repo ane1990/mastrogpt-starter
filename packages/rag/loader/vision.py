@@ -1,0 +1,32 @@
+import os, json, requests as req
+
+MODEL = "llama3.2-vision:11b"
+
+def collect(lines):
+  out = ""
+  for line in lines:
+    chunk = json.loads(line.decode("UTF-8"))
+    out +=  chunk.get("message", {}).get("content", "")
+    if len(out) > 2048:
+      return out
+  return out
+
+class Vision:
+  def __init__(self, args):
+    host = args.get("OLLAMA_HOST", os.getenv("OLLAMA_HOST"))
+    auth = args.get("AUTH", os.getenv("AUTH"))
+    self.url = f"https://{auth}@{host}/api/chat"
+
+  def decode(self, img):
+    msg = {
+      "model": MODEL,
+      "messages": [ {
+        "role": "user",
+        "content": "describe the image, limit your answer to only one paragraph",
+        "images": [img]
+      },
+      ],
+      "stream": False
+    }
+    lines = req.post(self.url, json=msg, stream=True, timeout=40).iter_lines()
+    return collect(lines)

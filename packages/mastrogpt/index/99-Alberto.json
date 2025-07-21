@@ -1,6 +1,11 @@
 [
-    {
-        "name": "Reverse",
-        "url": "aanelli/reverse"
-    }
+  {
+    "name": "Reverse",
+    "url": "aanelli/reverse"
+  },
+  {
+    "name": "Postgres",
+    "url": "mastrogpt/sql",
+    "users": ["admin"]
+  }
 ]
